@@ -12,11 +12,12 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = [ [id:"null"], file("/workspace/modules/modules/nf-core/rename/tests/test_samples.tsv", checkIfExists: true)]
-                input[1] = [
-                    [ id:'test', single_end:false ], // meta map
-                    file("/workspace/modules/modules/nf-core/rename/tests/test_samples.tsv", checkIfExists: true)
+                input[0] = [
+                    [ id:'test1', single_end:false ], // meta map
+                    [file("https://github.com/lescailab/testdata/raw/master/nanobodies/test01_flash_merged.fastq.gz", checkIfExists: true)
                     ]
+                ]
+                input[1] = true
                 """
             }
         }

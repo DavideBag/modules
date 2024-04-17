@@ -9,7 +9,7 @@ process RENAME {
 
     input:
     tuple val(meta), path(reads)
-    val options
+    val single_end
 
     output:
     tuple val(meta), path("*.fastq.gz"), emit: renamed
@@ -22,7 +22,7 @@ process RENAME {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
 
-    if (options.single_end) {
+    if (single_end) {
         """
         zcat ${reads[0]} | fastx_renamer -z -n COUNT -o ${meta.id}_renamed.fastq.gz
         """

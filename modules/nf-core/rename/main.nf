@@ -4,8 +4,8 @@ process RENAME {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/fastx_toolkit:0.0.13--0':
-        'biocontainers/fastx_toolkit:0.0.13--0' }"
+        'https://depot.galaxyproject.org/singularity/fastx_toolkit:0.0.14--hdbdd923_11':
+        'biocontainers/fastx_toolkit:0.0.14--hdbdd923_11' }"
 
     input:
     tuple val(meta), path(reads)
@@ -25,6 +25,11 @@ process RENAME {
     if (single_end) {
         """
         zcat ${reads[0]} | fastx_renamer -z -n COUNT -o ${meta.id}_renamed.fastq.gz
+
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+        rename: \$(fastx_renamer -h |& sed '2!d' |& perl -nae 'print \$F[4]."\n";')
+        END_VERSIONS
         """
     }
     else {
@@ -33,10 +38,10 @@ process RENAME {
         zcat ${reads[1]} | fastx_renamer -z -n COUNT -o ${meta.id}_R2_renamed.fastq.gz
 
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        rename: \$(samtools --version |& sed '1!d ; s/samtools //')
-    END_VERSIONS
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            rename: \$(fastx_renamer -h |& sed '2!d' |& perl -nae 'print \$F[4]."\n";')
+        END_VERSIONS
     """
     }
 }
